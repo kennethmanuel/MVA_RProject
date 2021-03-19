@@ -1,0 +1,22 @@
+Ikuti perintah-perintah di bawah ini:
+
+A. Gunakan data "UK House price index". Pilih beberapa nama perumahan, seperti:
+( DATA PREPARATION )
+1. City of London, Barking & Dagenham, Barnet, Bexley, Brent, Bromley, Camden, Croydon, Ealing, Enfield, Greenwich, Hackney, Hammersmith & Fulham, Haringey, Harrow, Havering, Hillingdon, Hounslow, Islington, Kensington & Chelsea, Kingston upon Thames, Lambeth, Lewisham, Merton, Newham, Redbridge, Richmond upon Thames, Southwark, Sutton, Tower Hamlets, Waltham Forest, Wandsworth, dan Westminster.
+
+2. Area perumahan, seperti: Inner London, Outer London, NORTH EAST, NORTH WEST, YORKS & THE HUMBER, EAST MIDLANDS, WEST MIDLANDS, EAST OF ENGLAND, LONDON, SOUTH EAST, dan SOUTH WEST.
+
+
+B. Kelompokkan ke dalam data tahunan (Januari s/d Desember) untuk beberapa pilihan anda di A.1 dan A.2 di atas. Lakukan EDA dan beri analisis dan manfaat informasi EDA nya.
+( RANDOM NOBRAIN BULLSHIT )
+
+
+C. Lakukan pengujian normalitas sesuai dengan SYARAT dan KETENTUAN Kenormalan yang anda lakukan untuk nomor A.
+
+
+D. Gunakan hasil nomor C sebagai pemenuhan syarat untuk melakukan estimasi mean dan pengujian kesamaan mean (baik t-test dan/atau z-test serta ANOVA - dengan treatment beda tahun) dan beri analisis dan manfaat informasi estimasi dan pengujian kesamaan mean-nya
+( ??? )
+
+E. Lakukan estimasi varians dan pengujian homogenitas varians pada data terpilih - dengan treatment beda tahun dan beri analisis dan manfaat informasi estimasi dan pengujian homogenitasnya.
+
+SEMAKIN BANYAK SISI PANDANG ANDA DALAM MEMILIH NOMOR A YANG ANDA TERUSKAN KE B, C, D, DAN E, MAKA SEMAKIN SAYA BERI APRESIASI DENGAN NILAI YANG OPTIMAL.

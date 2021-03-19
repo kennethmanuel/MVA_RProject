@@ -1,0 +1,31 @@
+# install.packages("matlib")
+library(matlib)
+A = matrix(c(1.00000, -.16799, .41224, .34137, -.14165, -.16799, 1.00000, 0.4669e-1, .83775, .30002, .41224, 0.4669e-1, 1.00000, .31053, 0.9449e-1, .34137, .83775, .31053, 1.00000, .31298, -.14165, .30002, 0.9449e-1, .31298, 1.00000),5,5);
+dim(A)
+rank(A)
+
+Atranspose=t(A)
+Ainverse=inv(A)
+
+# Pengecekan A x Ainverse
+AinvA=A%*%Ainverse
+AinvA             # matriks identitas
+
+# mencari eigenvalue dan eigenvektor
+eigenA=eigen(A)
+eigenA
+eigenA$values
+eigenA$vectors
+
+# Power of matrix
+# install.packages("expm")
+library(expm)
+SquareA=A%^%2
+SquareA
+
+# Atau Power of matrix dapat menggunakan 
+# install.packages("matrixcalc")
+library(matrixcalc)
+kuadratA=matrix.power(A, 2)
+kuadratA
+

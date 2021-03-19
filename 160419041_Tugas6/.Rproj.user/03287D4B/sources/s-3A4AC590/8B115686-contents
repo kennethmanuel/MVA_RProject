@@ -1,0 +1,15 @@
+library("readxl")
+library("ggplot2")
+
+# excel_sheets('BacterialGrowth.xlsx')
+bacterial_growth <- read_excel('BacterialGrowth.xlsx', sheet='MANOVA-Data 1')
+bacterial_growth <- bacterial_growth[2:7]
+
+# lapply(bacterial_growth, class)
+bacterial_growth$Temperature <- as.factor(bacterial_growth$Temperature)
+bacterial_growth$`N-source` <- as.factor(bacterial_growth$`N-source`)
+
+head(bacterial_growth)
+
+aov(bacterial_growth[c(1,4)])
+

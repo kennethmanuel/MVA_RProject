@@ -1,0 +1,1 @@
+Bandingkan masing masing kategori apakah deviasinya lower atau higher
