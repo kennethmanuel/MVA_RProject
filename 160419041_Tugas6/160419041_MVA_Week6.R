@@ -3,10 +3,8 @@
 ####################################################################
 library("readxl")
 library("ggplot2")
-# library("dgof")
 library("car")
 library("ggpubr")
-#library("mvnormtest")
 library("mvShapiroTest")
 
 # excel_sheets('BacterialGrowth.xlsx')
@@ -87,6 +85,7 @@ sub2.aov1 <- aov(`Optical density` ~ Temperature, data = bacterial_growth)
 summary(sub2.aov1)
 sub3.aov1 <- aov(`Product yield` ~ Temperature, data = bacterial_growth)
 summary(sub3.aov1)
+
 sub4.aov1 <- aov(`Dry weight` ~ `N-source`, data = bacterial_growth)
 summary(sub4.aov1)
 sub5.aov1 <- aov(`Optical density` ~ `N-source`, data = bacterial_growth)
@@ -147,3 +146,4 @@ sub1.man2 <- manova(
     Temperature + `N-source` + Temperature:`N-source`,
   data = bacterial_growth)
 summary(sub1.man2)
+
