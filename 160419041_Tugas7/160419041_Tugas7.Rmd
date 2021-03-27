@@ -1,0 +1,52 @@
+---
+title: "Salespeople-data"
+author: "Kenneth Manuel"
+date: "3/27/2021"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+``` {r}
+library("readxl")
+library("NbClust")
+library("factoextra")
+```
+
+``` {r}
+data <- read_excel('Salespeople-data.xlsx')
+head(data)
+```
+# Matriks korelasi
+```{r}
+#res <- cor(data)
+#round(res, 2)
+```
+```{r}
+#ev <- eigen(res)
+#e.values <- ev$values
+#round(e.values, 2)
+```
+
+# Menentukan keputusan berapa kluster yang akan digunakan
+```{r}
+fviz_nbclust(data, kmeans, method = "wss") +
+    geom_vline(xintercept = 2 , linetype = 2)+
+  labs(subtitle = "Elbow method")
+
+fviz_nbclust(data, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+
+fviz_nbclust(data, kmeans, nstart = 25,  method = "gap_stat", nboot = 50)+
+  labs(subtitle = "Gap statistic method")
+```
+Baik metode elbow maupun sillhouete menyarankan untuk menggunakan 2 cluster sedangkan metode gap statistics menyarankan untuk menggunakan 4 cluster.
+
+# 

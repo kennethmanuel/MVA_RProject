@@ -1,0 +1,11 @@
+Diberikan data "salespeople.xlsx" yang memuat 50 slaeman dan diamati sebanyak 7 variabel (Salegrow, saleproft, Newsale, createst, Mechtest, absttest, dan mathtest). Lakukan analisis multivariate terhadap data tersebut a.l.:
+i. Tentukan nilai eigenvalue berdasarkan matrik korelasinya.
+ii. Berdasarkan nilai eigenvlue tersebut (nomo i.), putuskan berapa kluster harus anda buat terhadap 50 salesman tersebut.
+iii. Buat klusternya sesuai keputusan anda di nomor ii. dengan menggunakan:
+     a. Non-hierarchy (K-Means - sesuai jumlah kluster hasil anda di nomor ii.)
+     b. Hierarchy dengan jarak Euclidean dan metode single linkage.
+    Simpanlah label kluster membership hasil iii.a. maupun iii.b.
+iv. Buatkan analisis diskriminan untuk memperoleh:
+     a. Prosentase ketepatan klasifikasi 50 slaesman ke hasil iii.a. maupun ke hasil iii.b.
+     b. fungsi diskriminan berdasarkan hasil iii.a. maupun ke hasil iii.b.
+v. Lengkapi semua hasil analisis anda dengan interpretasi yang mudah dimengerti oleh orang awam.
