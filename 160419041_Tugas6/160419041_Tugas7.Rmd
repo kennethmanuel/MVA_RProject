@@ -49,4 +49,28 @@ fviz_nbclust(data, kmeans, nstart = 25,  method = "gap_stat", nboot = 50)+
 ```
 Baik metode elbow maupun sillhouete menyarankan untuk menggunakan 2 cluster sedangkan metode gap statistics menyarankan untuk menggunakan 4 cluster.
 
-# 
+Karena dua metode yaitu sillhouete dan elbow menyarankan untuk menggunakan 2 cluster maka clustering akan dibagi menjadi **2 cluster**
+
+# K-means clustering
+
+```{r}
+km.res <- eclust(data, "kmeans", k = 2,
+                 nstart = 25, graph = FALSE)
+# k-means group number of each observation
+km.res$cluster
+```
+```{r}
+fviz_cluster(km.res,  ellipse.type = "norm")
+fviz_silhouette(km.res)
+```
+# Hierachical clustering
+```{r}
+res.hc <- eclust(data, "hclust", k = 2,
+                method = "ward.D2", graph = FALSE) 
+res.hc$cluster
+```
+```{r}
+fviz_dend(res.hc, rect = TRUE, show_labels = TRUE, cex = 0.5) 
+fviz_silhouette(res.hc)
+```
+
