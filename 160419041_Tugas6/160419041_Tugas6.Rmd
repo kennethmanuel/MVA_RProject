@@ -29,6 +29,7 @@ head(data)
 #res <- cor(data)
 #round(res, 2)
 ```
+# Eigenvalue
 ```{r}
 #ev <- eigen(res)
 #e.values <- ev$values
