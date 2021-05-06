@@ -1,0 +1,93 @@
+---
+title: "Wiscsemdata"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Library
+library(readxl)
+library(psych)
+```
+
+```{r}
+#Baca data 
+data <- read_excel("F:/8. Applied Mulitivariate Analysis KP A (3 SKS)/Tugas/Week 10/Tugas FA  - WiscsemData.xlsx")
+head(data)
+str(data)
+#ada 241 data dari client,	agemate,	info,	comp,	arith,	simil,	vocab,	digit,	pictcomp,	parang,	block,	object,	coding
+
+```
+
+```{r}
+#Fungsi factanal
+data.fa <- factanal(data, factors = 2)
+data.fa
+#Dalam Funsi factanal kami hanya membuat tebakan dan mengatur jumlah faktornya menjadi 2
+```
+
+```{r}
+#Recall faktor analisis
+Lambda <- data.fa$loadings
+Psi <- diag(data.fa$uniquenesses)
+S <- data.fa$correlation
+Sigma <- Lambda %*% t(Lambda) + Psi
+
+round(S - Sigma, 6)
+#Dalam hal ini kami membandingkan matriks korelasinya angkanya mendekati 0 menunjukan bahwa data yang kami gunakan baik
+```
+
+```{r}
+#Interpretation faktor
+data.fa.none <- factanal(data, factors = 2, rotation = "none")
+data.fa.varimax <- factanal(data, factors = 2, rotation = "varimax")
+data.fa.promax <- factanal(data, factors = 2, rotation = "promax")
+
+par(mfrow = c(1,3))
+
+plot(data.fa.none$loadings[,1], 
+     data.fa.none$loadings[,2],
+     xlab = "Factor 1", 
+     ylab = "Factor 2", 
+     ylim = c(-1,1),
+     xlim = c(-1,1),
+     main = "No rotation")
+abline(h = 0, v = 0)
+
+plot(data.fa.varimax$loadings[,1], 
+     data.fa.varimax$loadings[,2],
+     xlab = "Factor 1", 
+     ylab = "Factor 2", 
+     ylim = c(-1,1),
+     xlim = c(-1,1),
+     main = "Varimax rotation")
+
+
+text(data.fa.varimax$loadings[,1]-0.08, 
+     data.fa.varimax$loadings[,2]+0.08,
+     colnames(data),
+     col="blue")
+abline(h = 0, v = 0)
+
+plot(data.fa.promax$loadings[,1], 
+     data.fa.promax$loadings[,2],
+     xlab = "Factor 1", 
+     ylab = "Factor 2",
+     ylim = c(-1,1),
+     xlim = c(-1,1),
+     main = "Promax rotation")
+abline(h = 0, v = 0)
+
+text(data.fa.promax$loadings[,1]-0.08, 
+     data.fa.promax$loadings[,2]+0.08,
+     colnames(data),
+     col="blue")
+abline(h = 0, v = 0)
+#Melihat gambar diatas terlihat bahwa faktor 1 semua data saling mempengaruhi dari no rotation, varimax rotation, promax rotation.
+```

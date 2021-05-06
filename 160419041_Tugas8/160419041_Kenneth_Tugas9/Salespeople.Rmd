@@ -1,0 +1,98 @@
+---
+title: "SalesPeople"
+author: "Kenneth Manuel (160419041), Jehuda Rivaldo (160419133)"
+date: "4/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library("readxl")
+library("corrplot")
+library("ggplot2")
+library("ggfortify")
+```
+# Data Preparation
+```{r}
+data <- read_excel('Salespeople-data.xlsx')
+head(data)
+```
+```{r}
+summary(data)
+```
+Gunakan variabel independen
+```{r}
+data_ip = data[4:7]
+head(data_ip)
+```
+Melihat _correlation plot_ sepertinya semua variabel independen agak berkorelasi kecuali abstract test dan creative test.
+```{r}
+# Matrix correlation
+data.cor = cor(data_ip[,])
+data.cor
+corrplot(data.cor)
+corrplot.mixed(data.cor)
+```
+
+# Principal Component Analysis
+Melihat visualisasi dan kesimpulan yang lebih ringkas dengan PCA
+```{r}
+fit <- prcomp(data_ip[,], scale=TRUE)
+fit
+```
+Dari masing-masing **Principal Component** dapat kita lihat bahwa 59% data dijelaskan dalam PC1, 23% data dijelaskan dalam PC2, 9% dijelaskan dalam PC3, dan 8% dijelaskan dalam PC4.
+```{r}
+summary(fit)
+```
+Elbow pada screeplot terletak pada PC2
+PC1 dan PC2 akan digunakan untuk analisis ini. (82% data dijelaskan)
+```{r}
+plot(fit, type="l")
+```
+
+Scatterplot PC1 dan PC2
+```{r}
+autoplot(fit)
+```
+
+Melihat plot ini kita dapat mengerti bahwa ketika semakin tinggi nilai observasi **PC1** maka ke empat variabel independen juga akan semakin tinggi. Untuk obeservasi nilai **PC2**, semakin tinggi nilai PC2 maka nilai _Creativity Test_ dan _Mechanical Test_ semakin tinggi, sedangkan semakin kecil nilai PC2 maka nilai _Math Test_ dan _Abstract Test_ akan semakin rendah.
+```{r}
+biplot(fit)
+```
+
+## Model Regresi
+Koefisien regresi **salesgrow**
+```{r}
+lm(data$Salegrow~data$createst+data$Mechtest+data$absttest+data$mathtest)
+```
+
+- Nilai uji statistik F bernilai 177.4 dengan p-value < 0.05 tersebut menunjukan bahwa keempat variabel independen sangat berpengaruh terhadap **salesgrow**. 
+- Nilai R-squared 0.9351 menunjukan bahwa keempat variabel independen menjelaskan 93% variasi variabel **salesgrow**
+```{r}
+summary(lm(data$Salegrow~data$createst+data$Mechtest+data$absttest+data$mathtest))
+```
+
+Koefisien regresi **saleprofit**
+```{r}
+lm(data$saleproft~data$createst+data$Mechtest+data$absttest+data$mathtest)
+```
+
+- Nilai uji statistik F bernilai 321.9 dengan p-value < 0.05 tersebut menunjukan bahwa keempat variabel independen sangat berpengaruh terhadap **saleprofit**. 
+- Nilai R-squared 0.9632 menunjukan bahwa keempat variabel independen menjelaskan 96% variasi variabel **saleprofit**
+```{r}
+summary(lm(data$saleproft~data$createst+data$Mechtest+data$absttest+data$mathtest))
+```
+
+Koefisien regresi **newsale**
+```{r}
+lm(data$Newsale~data$createst+data$Mechtest+data$absttest+data$mathtest)
+```
+
+- Nilai uji statistik F bernilai 321.9 dengan p-value < 0.05 tersebut menunjukan bahwa keempat variabel independen sangat berpengaruh terhadap **newsale**. 
+- Nilai R-squared 0.9255 menunjukan bahwa keempat variabel independen menjelaskan 92% variasi variabel **newsale**
+```{r}
+summary(lm(data$Newsale~data$createst+data$Mechtest+data$absttest+data$mathtest))
+```

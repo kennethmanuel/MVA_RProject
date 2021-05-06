@@ -1,0 +1,58 @@
+---
+title: "Tugas8"
+output: pdf_document
+author: "Kenneth Manuel (160419041), Jehuda Rivaldo (160419133)"
+date: "4/24/2021"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library("readxl")
+library("factoextra")
+library("dplyr")
+library("MASS")
+library("nnet")
+library(purrr)
+library(caret)
+library(psych)
+```
+
+```{r}
+dat <- read_excel('irisdata.xlsx')
+data <- dat[2:6]
+data1 <- as.data.frame(map_if(data, is.character, as.factor))
+str(data1)
+head(data1)
+summary(data1)
+boxplot(Sepal.Length ~ Species, data = iris, main = "Box Plot", xlab = "Species", ylab = "Sepal Length")
+```
+
+```{r}
+#partition data (mengumpulkan data iris untuk diuji)
+set.seed(100)
+ind <- createDataPartition(iris$Species,p=0.80,list = F)
+data_train <- iris[ind,]
+test <- iris[-ind,]
+
+dim(data_train)
+dim(test)
+#data set train memiliki 120 dan data uji 30
+```
+
+```{r}
+#PCA (membuat bentuk dari analisis PCA)
+data_pc <- prcomp(data_train[,-5], center = T, scale = T)
+data_pc
+summary(data_pc)
+#dari summary diatas, dapat dilihat PC1 menjelaskan sekitar 74% dan PC2 sekitar 96% dari varian yang dijelaskan
+```
+
+```{r}
+#Membuat scatter plot
+data2 <- pairs.panels(data_pc$x,gap=0,bg=c("red","blue","yellow")[data_train$Species],
+             pch = 21)
+#Dari scatter plot diatas, kita dapat melihat korelasi 0 diantara principal component
+```

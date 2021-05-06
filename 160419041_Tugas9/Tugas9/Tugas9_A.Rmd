@@ -1,0 +1,93 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library("readxl")
+library("dplyr")
+```
+
+Baca data.
+```{r}
+ews_data <- read_excel("Data-EWS103Issuer.xlsx")
+ews_data <- ews_data[order(ews_data$Rating),] 
+head(ews_data)
+```
+
+Siapkan variabel bebas numerik untuk PCA
+```{r}
+# Independent variable (LR, DR, AR, PR, RR)
+ews <- ews_data[c(3:24)]
+head(ews)
+```
+
+# Principal Component Analysis
+Karena data sudah _centered_ dan _scaled_ (standardized) standard deviasi pada hasil PCA berikut adalah eigenvalues. Eigenvalue > 1 terdapat pada PCA 1 - PCA 7 sehingga kita akan menggunakan PCA 7 yang menjelaskan 92% variansi.
+```{r}
+fit <- princomp(ews, cor=TRUE) # performs a principal components analysis
+summary(fit)
+```
+
+```{r}
+#loadings(fit) # Extract or print loadings in principal components analysis
+```
+
+Dari hasil scree plot kelompok kami memilih untuk menggunakan PCA 1 - 7 dimana eigenvaluenya lebih dari 1.
+```{r}
+plot(fit, type="line") # scree plot
+```
+
+```{r}
+scores <- as.data.frame(fit$scores) # PCA Score
+scores
+```
+
+```{r}
+require(foreign)
+require(ggplot2)
+require(MASS)
+require(Hmisc)
+require(reshape2)
+```
+
+## Ordinal Logistic Regression
+Hasil coefficient table.
+```{r}
+# Logistic Regression
+model <- polr(as.factor(ews_data$Rating) ~ scores$Comp.1 + scores$Comp.2 +
+                 scores$Comp.3 + scores$Comp.4 + scores$Comp.5 + scores$Comp.6 +
+                 scores$Comp.7, 
+               data=ews_data, method="logistic", Hess=T)
+
+# Coefficient Table
+ctable <- coef(summary(model))
+
+# Store p values
+p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+
+# Combined tables
+(ctable <- cbind(ctable, "p value" = p))
+```
+
+```{r}
+data <- ews_data[,3:9]
+hasil <- c()
+for (x in 1:nrow(data)) {
+  angka = 0
+  for (i in (1:7)) {
+    angka = angka + (data[x,i] * ctable[i,1])
+  }
+  hasil[x] <- angka
+}
+
+ews_data$value <- abs(as.numeric(hasil))
+COLOR <- c(1:6)
+
+ews_sort <- ews_data[order(-ews_data$value, ews_data$Rating) , ]
+
+op <- par(mar=c(4,4,1,1), ps=10)
+plot(ews_sort$value, col=COLOR[ews_sort$Rating] )
+legend("topright", legend=levels(as.factor(ews_sort$Rating)), fill = COLOR, border=COLOR)
+par(op)
+```

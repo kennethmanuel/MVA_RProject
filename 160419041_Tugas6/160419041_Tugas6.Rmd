@@ -1,0 +1,109 @@
+---
+title: "Salespeople-data"
+author: "Kenneth Manuel"
+date: "3/27/2021"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = TRUE)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
+library("readxl")
+library("NbClust")
+library("factoextra")
+library("MASS")
+```
+
+```{r}
+data <- read_excel('Salespeople-data.xlsx')
+head(data)
+```
+
+# Matriks korelasi
+
+```{r}
+res <- cor(data)
+round(res, 2)
+```
+
+# Eigenvalue
+
+```{r}
+ev <- eigen(res)
+e.values <- ev$values
+round(e.values, 2)
+```
+
+# Menentukan keputusan berapa kluster yang akan digunakan
+
+```{r}
+fviz_nbclust(data, kmeans, method = "wss") +
+    geom_vline(xintercept = 2 , linetype = 2)+
+  labs(subtitle = "Elbow method")
+
+fviz_nbclust(data, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+
+fviz_nbclust(data, kmeans, nstart = 25,  method = "gap_stat", nboot = 50)+
+  labs(subtitle = "Gap statistic method")
+```
+
+Baik metode elbow maupun sillhouete menyarankan untuk menggunakan 2 cluster sedangkan metode gap statistics menyarankan untuk menggunakan 4 cluster.
+
+Karena dua metode yaitu sillhouete dan elbow menyarankan untuk menggunakan 2 cluster maka clustering akan dibagi menjadi **2 cluster**
+
+# K-means clustering
+
+```{r}
+km.res <- eclust(data, "kmeans", k = 2,
+                 nstart = 25, graph = FALSE)
+# k-means group number of each observation
+km.res$cluster
+```
+
+```{r}
+fviz_cluster(km.res,  ellipse.type = "norm")
+fviz_silhouette(km.res)
+```
+
+# Hierachical clustering
+
+```{r}
+res.hc <- eclust(data, "hclust", k = 2,
+                method = "ward.D2", graph = FALSE) 
+res.hc$cluster
+```
+
+```{r}
+fviz_dend(res.hc, rect = TRUE, show_labels = TRUE, cex = 0.5) 
+fviz_silhouette(res.hc)
+```
+
+# Comparing hierachical clustering and K-means clustering
+
+```{r}
+km.res$cluster
+res.hc$cluster
+```
+
+Dari dapat dilihat bahwa sebenarnya kedua cluster memberikan kelas yang sama persis hanya saja hierachical clustering melabel kelas pertama k-means dengan kelas 1 dan kelas ke dua dengan kelas 2.
+
+```{r}
+cluster.member <- data.frame(cluster = km.res$cluster)
+data <- cbind(data, cluster.member)
+```
+
+# Linear discriminant analysis
+
+Dengan mengasumsi bahwa masing - masing variabel berdistribusi normal univariate.
+
+```{r}
+# Fit the model
+model <- lda(cluster~., data = data)
+model
+```

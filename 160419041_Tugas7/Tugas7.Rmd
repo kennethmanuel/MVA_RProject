@@ -1,0 +1,116 @@
+---
+title: "Tugas7"
+author: "Kenneth Manuel (160419041), Jehuda Rivaldo (160419133)"
+date: "4/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library("readxl")
+library("factoextra")
+library("dplyr")
+library("MASS")
+library("nnet")
+```
+
+```{r}
+data <- read_excel('Salespeople-data.xlsx')
+head(data)
+```
+
+### (1) Buatkan Fungsi Diskriminan Linear dan Quadratik dalam R untuk data Salespeople. Gunakan cara Clustering dengan target 3 cluster untuk menciptakan respon yang akan diukur ketepatan klasifikasinya dengan menggunakan fungsi diskriminan anda.
+
+Clustering dengan 3 target cluster
+```{r}
+kmeans <- kmeans(data, centers = 3)
+kmeans
+```
+Plot cluster
+```{r}
+fviz_cluster(kmeans, data = data, ellipse.type = "norm")
+```
+
+Attach cluster result label ke data
+```{r}
+data.cluster <-
+  cbind(data, `kmeans` = kmeans[["cluster"]]) # simpan label hasil clustering
+head(data.cluster)
+```
+
+Dengan mengasumsi bahwa masing-masing variabel berdistribusi normal unviariate.
+Split data ke training dan test set
+```{r}
+# Split data to training and test set
+set.seed(123)
+training.samples <- 
+  sample(seq(nrow(data.cluster)), size = floor(0.75 * nrow(data.cluster)), replace = F)
+train.data <- data.cluster[training.samples, ]
+test.data <- data.cluster[-training.samples, ]
+```
+
+Compute LDA
+```{r}
+model <- lda(formula = kmeans ~ ., data = train.data)
+model
+```
+
+Plot
+```{r}
+plot(model, col = as.integer(train.data$kmeans)) 
+```
+
+Make predictions
+```{r}
+predictions <- predict(object = model, newdata = test.data)
+```
+
+Hasil model accuracy 
+```{r}
+mean(predictions$class == test.data$kmeans)
+```
+
+### (2) Dengan menggunakan Logistic Regression, lakukan ketepatan klasifikasi pada hasil Clustering di atas.
+
+Split data ke training dan test set
+```{r}
+train <- sample_frac(data.cluster, 0.75)
+sample_id <- as.numeric(rownames(train)) # rownames() returns character (therefore use as.numeric)
+test <- data.cluster[-sample_id, ]
+# Set basline
+#train$kmeans <- relevel(train$kmeans, ref = "3") 
+```
+
+Use multinom() function to fit model then use summary() to explore beta coefficients
+```{r}
+multinom.fit <- multinom(kmeans ~ . , data = train) # Training the multinomial model
+summary(multinom.fit) # Checking the model
+#exp(coef(multinom.fit)) ## extracting coefficients from the model and exponentiate
+#head(probability.table <- fitted(multinom.fit))
+```
+Extracting coefficients from the model and exponentiate
+```{r}
+## extracting coefficients from the model and exponentiate
+exp(coef(multinom.fit))
+```
+
+Make predictions
+```{r}
+# Predicting values for train dataset
+train$precticed <- predict(multinom.fit, newdata = train, "class")
+
+# Building classification table
+ctable <- table(train$kmeans, train$precticed)
+```
+
+Model Accuracy
+```{r}
+round((sum(diag(ctable)) / sum(ctable)), 2)
+```
+
+
+### (3) Bandingkan hasil klasifikasi anda dengan hasil fungsi diskriminan anda. Mana yang anda pilih (yang lebih tepat cara klasifikasinya -- cara diskriminan atau Logistic Regression--?)
+Kesimpulan: Baik hasil klasifikasi cara diskriminan maupun logistic regression pada kasus Sales People model keduanya mengklasifikasi 100% observasi dengan benar sehingga keduanya cukup tepat.
